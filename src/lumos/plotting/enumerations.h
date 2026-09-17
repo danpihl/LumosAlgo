@@ -260,7 +260,7 @@ namespace lumos
         XYZ
     };
 
-    enum class GuiElementType : std::uint8_t
+    enum class GuiElementType : uint8_t
     {
         Button,
         Slider,

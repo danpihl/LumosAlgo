@@ -439,7 +439,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::Slider)
+            if (gui_element->getType() != lumos::GuiElementType::Slider)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a slider!");
             }
@@ -459,7 +459,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::Button)
+            if (gui_element->getType() != lumos::GuiElementType::Button)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a button!");
             }
@@ -479,7 +479,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::Checkbox)
+            if (gui_element->getType() != lumos::GuiElementType::Checkbox)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a checkbox!");
             }
@@ -499,7 +499,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::TextLabel)
+            if (gui_element->getType() != lumos::GuiElementType::TextLabel)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a text label!");
             }
@@ -519,7 +519,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::ListBox)
+            if (gui_element->getType() != lumos::GuiElementType::ListBox)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a list box!");
             }
@@ -539,7 +539,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::EditableText)
+            if (gui_element->getType() != lumos::GuiElementType::EditableText)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not an editable text!");
             }
@@ -564,7 +564,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::DropdownMenu)
+            if (gui_element->getType() != lumos::GuiElementType::DropdownMenu)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a drop down menu!");
             }
@@ -584,7 +584,7 @@ namespace lumos
 
             const std::shared_ptr<internal::InternalGuiElementHandle> gui_element{gui_element_handles[handle_string]};
 
-            if (gui_element->getType() != duoplot::GuiElementType::RadioButtonGroup)
+            if (gui_element->getType() != lumos::GuiElementType::RadioButtonGroup)
             {
                 throw std::runtime_error("Gui element with handle string " + handle_string + " is not a radio button group!");
             }
@@ -603,7 +603,7 @@ namespace lumos
 
             const std::uint8_t *const raw_data = received_gui_data.data();
 
-            const duoplot::GuiElementType type{raw_data[idx]};
+            const lumos::GuiElementType type{raw_data[idx]};
             idx += sizeof(std::uint8_t);
 
             const std::uint8_t handle_string_length = raw_data[1];
@@ -623,7 +623,7 @@ namespace lumos
 
             UInt8ArrayView payload_data_view{raw_data + idx, payload_size};
 
-            if (type == duoplot::GuiElementType::Slider)
+            if (type == lumos::GuiElementType::Slider)
             {
                 std::map<std::string, gui::SliderCallbackFunction> &gui_callbacks = getSliderCallbacks();
 
@@ -632,7 +632,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::SliderHandle>(handle_string));
                 }
             }
-            else if (type == duoplot::GuiElementType::Button)
+            else if (type == lumos::GuiElementType::Button)
             {
                 std::map<std::string, gui::ButtonCallbackFunction> &gui_callbacks = getButtonCallbacks();
 
@@ -641,7 +641,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::ButtonHandle>(handle_string));
                 }
             }
-            else if (type == duoplot::GuiElementType::Checkbox)
+            else if (type == lumos::GuiElementType::Checkbox)
             {
                 std::map<std::string, gui::CheckboxCallbackFunction> &gui_callbacks = getCheckboxCallbacks();
 
@@ -650,7 +650,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::CheckboxHandle>(handle_string));
                 }
             }
-            /*else if (type == duoplot::GuiElementType::TextLabel)
+            /*else if (type == lumos::GuiElementType::TextLabel)
             {
                 std::map<std::string, gui::TextLabelCallbackFunction>& gui_callbacks = getTextLabelCallbacks();
 
@@ -659,7 +659,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::TextLabelHandle>(handle_string));
                 }
             }*/
-            else if (type == duoplot::GuiElementType::ListBox)
+            else if (type == lumos::GuiElementType::ListBox)
             {
                 std::map<std::string, gui::ListBoxCallbackFunction> &gui_callbacks = getListBoxCallbacks();
 
@@ -668,7 +668,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::ListBoxHandle>(handle_string));
                 }
             }
-            else if (type == duoplot::GuiElementType::EditableText)
+            else if (type == lumos::GuiElementType::EditableText)
             {
                 std::map<std::string, gui::EditableTextCallbackFunction> &gui_callbacks = getEditableTextCallbacks();
 
@@ -677,7 +677,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::EditableTextHandle>(handle_string));
                 }
             }
-            else if (type == duoplot::GuiElementType::DropdownMenu)
+            else if (type == lumos::GuiElementType::DropdownMenu)
             {
                 std::map<std::string, gui::DropdownMenuCallbackFunction> &gui_callbacks = getDropdownMenuCallbacks();
 
@@ -686,7 +686,7 @@ namespace lumos
                     gui_callbacks[handle_string](gui::getGuiElementHandle<gui::DropdownMenuHandle>(handle_string));
                 }
             }
-            else if (type == duoplot::GuiElementType::RadioButtonGroup)
+            else if (type == lumos::GuiElementType::RadioButtonGroup)
             {
                 std::map<std::string, gui::RadioButtonGroupCallbackFunction> &gui_callbacks = getRadioButtonGroupCallbacks();
 

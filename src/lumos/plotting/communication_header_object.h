@@ -139,192 +139,196 @@ namespace lumos
 
                 return out_val;
             }
-
-            template <>
-            internal::Dimension2D as() const
-            {
-                internal::Dimension2D dim;
-                deserializeFromCommunicationHeaderObject(dim, *this);
-                return dim;
-            }
-
-            template <>
-            std::pair<Vec3<double>, Vec3<double>> as() const
-            {
-                std::pair<Vec3<double>, Vec3<double>> pt;
-                deserializeFromCommunicationHeaderObject(pt, *this);
-                return pt;
-            }
-
-            template <>
-            internal::DataType as() const
-            {
-                internal::DataType dt;
-                deserializeFromCommunicationHeaderObject(dt, *this);
-                return dt;
-            }
-
-            template <>
-            Vec3<double> as() const
-            {
-                Vec3<double> pt;
-                deserializeFromCommunicationHeaderObject(pt, *this);
-                return pt;
-            }
-
-            template <>
-            FixedSizeMatrix<double, 3, 3> as() const
-            {
-                FixedSizeMatrix<double, 3, 3> mat;
-                deserializeFromCommunicationHeaderObject(mat, *this);
-                return mat;
-            }
-
-            template <>
-            ItemId as() const
-            {
-                ItemId id;
-                deserializeFromCommunicationHeaderObject(id, *this);
-                return id;
-            }
-
-            // Properties
-            template <>
-            internal::PropertyBase as() const
-            {
-                internal::PropertyBase pb;
-                deserializeFromCommunicationHeaderObject(pb, *this);
-                return pb;
-            }
-
-            template <>
-            properties::Label as() const
-            {
-                properties::Label label;
-                deserializeFromCommunicationHeaderObject(label, *this);
-                return label;
-            }
-
-            template <>
-            properties::Alpha as() const
-            {
-                properties::Alpha alpha;
-                deserializeFromCommunicationHeaderObject(alpha, *this);
-                return alpha;
-            }
-
-            template <>
-            properties::LineWidth as() const
-            {
-                properties::LineWidth lw;
-                deserializeFromCommunicationHeaderObject(lw, *this);
-                return lw;
-            }
-
-            template <>
-            internal::ColorInternal as() const
-            {
-                internal::ColorInternal color;
-                deserializeFromCommunicationHeaderObject(color, *this);
-                return color;
-            }
-
-            template <>
-            properties::EdgeColor as() const
-            {
-                properties::EdgeColor color;
-                deserializeFromCommunicationHeaderObject(color, *this);
-                return color;
-            }
-
-            template <>
-            properties::FaceColor as() const
-            {
-                properties::FaceColor color;
-                deserializeFromCommunicationHeaderObject(color, *this);
-                return color;
-            }
-
-            template <>
-            properties::Silhouette as() const
-            {
-                properties::Silhouette s;
-                deserializeFromCommunicationHeaderObject(s, *this);
-                return s;
-            }
-
-            template <>
-            properties::ScatterStyle as() const
-            {
-                properties::ScatterStyle style;
-                deserializeFromCommunicationHeaderObject(style, *this);
-                return style;
-            }
-
-            template <>
-            properties::ColorMap as() const
-            {
-                properties::ColorMap cmap;
-                deserializeFromCommunicationHeaderObject(cmap, *this);
-                return cmap;
-            }
-
-            template <>
-            properties::LineStyle as() const
-            {
-                properties::LineStyle ls;
-                deserializeFromCommunicationHeaderObject(ls, *this);
-                return ls;
-            }
-
-            template <>
-            properties::PointSize as() const
-            {
-                properties::PointSize ps;
-                deserializeFromCommunicationHeaderObject(ps, *this);
-                return ps;
-            }
-
-            template <>
-            properties::BufferSize as() const
-            {
-                properties::BufferSize bs;
-                deserializeFromCommunicationHeaderObject(bs, *this);
-                return bs;
-            }
-
-            template <>
-            properties::DistanceFrom as() const
-            {
-                properties::DistanceFrom df;
-                deserializeFromCommunicationHeaderObject(df, *this);
-                return df;
-            }
-
-            template <>
-            properties::ZOffset as() const
-            {
-                properties::ZOffset zo;
-                deserializeFromCommunicationHeaderObject(zo, *this);
-                return zo;
-            }
-
-            template <>
-            properties::Transform as() const
-            {
-                properties::Transform tf;
-                deserializeFromCommunicationHeaderObject(tf, *this);
-                return tf;
-            }
-
-            template <>
-            PropertyFlag as() const
-            {
-                PropertyFlag flag;
-                deserializeFromCommunicationHeaderObject(flag, *this);
-                return flag;
-            }
         };
+
+        // Template specializations must be at namespace scope for GCC compatibility.
+        // Clang accepts them inside the class but GCC does not (C++ standard requires
+        // explicit specializations to be in an enclosing namespace scope).
+
+        template <>
+        inline internal::Dimension2D CommunicationHeaderObject::as() const
+        {
+            internal::Dimension2D dim;
+            deserializeFromCommunicationHeaderObject(dim, *this);
+            return dim;
+        }
+
+        template <>
+        inline std::pair<Vec3<double>, Vec3<double>> CommunicationHeaderObject::as() const
+        {
+            std::pair<Vec3<double>, Vec3<double>> pt;
+            deserializeFromCommunicationHeaderObject(pt, *this);
+            return pt;
+        }
+
+        template <>
+        inline internal::DataType CommunicationHeaderObject::as() const
+        {
+            internal::DataType dt;
+            deserializeFromCommunicationHeaderObject(dt, *this);
+            return dt;
+        }
+
+        template <>
+        inline Vec3<double> CommunicationHeaderObject::as() const
+        {
+            Vec3<double> pt;
+            deserializeFromCommunicationHeaderObject(pt, *this);
+            return pt;
+        }
+
+        template <>
+        inline FixedSizeMatrix<double, 3, 3> CommunicationHeaderObject::as() const
+        {
+            FixedSizeMatrix<double, 3, 3> mat;
+            deserializeFromCommunicationHeaderObject(mat, *this);
+            return mat;
+        }
+
+        template <>
+        inline ItemId CommunicationHeaderObject::as() const
+        {
+            ItemId id;
+            deserializeFromCommunicationHeaderObject(id, *this);
+            return id;
+        }
+
+        // Properties
+        template <>
+        inline internal::PropertyBase CommunicationHeaderObject::as() const
+        {
+            internal::PropertyBase pb;
+            deserializeFromCommunicationHeaderObject(pb, *this);
+            return pb;
+        }
+
+        template <>
+        inline properties::Label CommunicationHeaderObject::as() const
+        {
+            properties::Label label;
+            deserializeFromCommunicationHeaderObject(label, *this);
+            return label;
+        }
+
+        template <>
+        inline properties::Alpha CommunicationHeaderObject::as() const
+        {
+            properties::Alpha alpha;
+            deserializeFromCommunicationHeaderObject(alpha, *this);
+            return alpha;
+        }
+
+        template <>
+        inline properties::LineWidth CommunicationHeaderObject::as() const
+        {
+            properties::LineWidth lw;
+            deserializeFromCommunicationHeaderObject(lw, *this);
+            return lw;
+        }
+
+        template <>
+        inline internal::ColorInternal CommunicationHeaderObject::as() const
+        {
+            internal::ColorInternal color;
+            deserializeFromCommunicationHeaderObject(color, *this);
+            return color;
+        }
+
+        template <>
+        inline properties::EdgeColor CommunicationHeaderObject::as() const
+        {
+            properties::EdgeColor color;
+            deserializeFromCommunicationHeaderObject(color, *this);
+            return color;
+        }
+
+        template <>
+        inline properties::FaceColor CommunicationHeaderObject::as() const
+        {
+            properties::FaceColor color;
+            deserializeFromCommunicationHeaderObject(color, *this);
+            return color;
+        }
+
+        template <>
+        inline properties::Silhouette CommunicationHeaderObject::as() const
+        {
+            properties::Silhouette s;
+            deserializeFromCommunicationHeaderObject(s, *this);
+            return s;
+        }
+
+        template <>
+        inline properties::ScatterStyle CommunicationHeaderObject::as() const
+        {
+            properties::ScatterStyle style;
+            deserializeFromCommunicationHeaderObject(style, *this);
+            return style;
+        }
+
+        template <>
+        inline properties::ColorMap CommunicationHeaderObject::as() const
+        {
+            properties::ColorMap cmap;
+            deserializeFromCommunicationHeaderObject(cmap, *this);
+            return cmap;
+        }
+
+        template <>
+        inline properties::LineStyle CommunicationHeaderObject::as() const
+        {
+            properties::LineStyle ls;
+            deserializeFromCommunicationHeaderObject(ls, *this);
+            return ls;
+        }
+
+        template <>
+        inline properties::PointSize CommunicationHeaderObject::as() const
+        {
+            properties::PointSize ps;
+            deserializeFromCommunicationHeaderObject(ps, *this);
+            return ps;
+        }
+
+        template <>
+        inline properties::BufferSize CommunicationHeaderObject::as() const
+        {
+            properties::BufferSize bs;
+            deserializeFromCommunicationHeaderObject(bs, *this);
+            return bs;
+        }
+
+        template <>
+        inline properties::DistanceFrom CommunicationHeaderObject::as() const
+        {
+            properties::DistanceFrom df;
+            deserializeFromCommunicationHeaderObject(df, *this);
+            return df;
+        }
+
+        template <>
+        inline properties::ZOffset CommunicationHeaderObject::as() const
+        {
+            properties::ZOffset zo;
+            deserializeFromCommunicationHeaderObject(zo, *this);
+            return zo;
+        }
+
+        template <>
+        inline properties::Transform CommunicationHeaderObject::as() const
+        {
+            properties::Transform tf;
+            deserializeFromCommunicationHeaderObject(tf, *this);
+            return tf;
+        }
+
+        template <>
+        inline PropertyFlag CommunicationHeaderObject::as() const
+        {
+            PropertyFlag flag;
+            deserializeFromCommunicationHeaderObject(flag, *this);
+            return flag;
+        }
 
     } // namespace internal
 } // namespace lumos

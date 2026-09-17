@@ -5,11 +5,11 @@
 
 namespace lumos
 {
-    // typedef AxisAngle<double> AxisAngled;
+    typedef AxisAngle<double> AxisAngled;
     // typedef HomogeneousLine2D<double> HomogeneousLine2Dd;
     // typedef ParametricLine2D<double> ParametricLine2Dd;
     // typedef Line3D<double> Line3Dd;
-    // typedef Plane<double> Planed;
+    typedef Plane<double> Planed;
     // typedef Triangle2D<double> Triangle2Dd;
     // typedef Triangle3D<double> Triangle3Dd;
     typedef Matrix<double> Matrixd;
@@ -22,11 +22,11 @@ namespace lumos
     typedef Point3<double> Point3d;
     typedef Point4<double> Point4d;
 
-    // typedef AxisAngle<float> AxisAnglef;
+    typedef AxisAngle<float> AxisAnglef;
     // typedef HomogeneousLine2D<float> HomogeneousLine2Df;
     // typedef ParametricLine2D<float> ParametricLine2Df;
     // typedef Line3D<float> Line3Df;
-    // typedef Plane<float> Planef;
+    typedef Plane<float> Planef;
     // typedef Triangle2D<float> Triangle2Df;
     // typedef Triangle3D<float> Triangle3Df;
     typedef Matrix<float> Matrixf;

@@ -1,9 +1,7 @@
 #ifndef DUOPLOT_GUI_INTERNAL_H
 #define DUOPLOT_GUI_INTERNAL_H
 
-#include <errno.h>
-#include <stdlib.h>
-#include <sys/resource.h>
+#include "socket_compat.h"
 
 #include <functional>
 #include <map>
@@ -22,16 +20,16 @@ namespace lumos
         {
         private:
             std::string handle_string_;
-            duoplot::GuiElementType type_;
+            lumos::GuiElementType type_;
 
         public:
             InternalGuiElementHandle() {}
-            InternalGuiElementHandle(const std::string &handle_string, const duoplot::GuiElementType type)
+            InternalGuiElementHandle(const std::string &handle_string, const lumos::GuiElementType type)
                 : handle_string_{handle_string}, type_{type}
             {
             }
 
-            duoplot::GuiElementType getType() const
+            lumos::GuiElementType getType() const
             {
                 return type_;
             }
@@ -115,7 +113,7 @@ namespace lumos
 
         public:
             SliderInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::Slider}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::Slider}
             {
                 updateState(data_view);
             }
@@ -138,7 +136,7 @@ namespace lumos
         public:
             ButtonInternal() {}
             ButtonInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::Button}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::Button}
             {
                 updateState(data_view);
             }
@@ -157,7 +155,7 @@ namespace lumos
         public:
             CheckboxInternal() {}
             CheckboxInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::Checkbox}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::Checkbox}
             {
                 updateState(data_view);
             }
@@ -176,7 +174,7 @@ namespace lumos
         public:
             TextLabelInternal() {}
             TextLabelInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::TextLabel}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::TextLabel}
             {
                 updateState(data_view);
             }
@@ -198,7 +196,7 @@ namespace lumos
         public:
             ListBoxInternal() {}
             ListBoxInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::ListBox}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::ListBox}
             {
                 updateState(data_view);
             }
@@ -247,7 +245,7 @@ namespace lumos
         public:
             EditableTextInternal() {}
             EditableTextInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::EditableText}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::EditableText}
             {
                 updateState(data_view);
             }
@@ -281,7 +279,7 @@ namespace lumos
         public:
             DropdownMenuInternal() {}
             DropdownMenuInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::DropdownMenu}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::DropdownMenu}
             {
                 updateState(data_view);
             }
@@ -330,7 +328,7 @@ namespace lumos
         public:
             RadioButtonGroupInternal() {}
             RadioButtonGroupInternal(const std::string &handle_string, const UInt8ArrayView &data_view)
-                : InternalGuiElementHandle{handle_string, duoplot::GuiElementType::RadioButtonGroup}
+                : InternalGuiElementHandle{handle_string, lumos::GuiElementType::RadioButtonGroup}
             {
                 updateState(data_view);
             }
@@ -407,7 +405,7 @@ namespace lumos
 
             // Set reuse address that's already in use (probably by exited duoplot instance)
             int true_val = 1;
-            setsockopt(tcp_sockfd, SOL_SOCKET, SO_REUSEADDR, &true_val, sizeof(int));
+            setsockopt(tcp_sockfd, SOL_SOCKET, SO_REUSEADDR, (const char*)&true_val, sizeof(int));
 
             bzero(&tcp_servaddr, sizeof(tcp_servaddr));
 
@@ -499,7 +497,7 @@ namespace lumos
             }
 
             uint64_t num_expected_bytes;
-            read(tcp_connfd, &num_expected_bytes, sizeof(uint64_t));
+            socket_recv(tcp_connfd, &num_expected_bytes, sizeof(uint64_t));
 
             ReceivedGuiData received_data{num_expected_bytes};
 
@@ -510,7 +508,7 @@ namespace lumos
 
             while (true)
             {
-                const ssize_t num_received_bytes = read(tcp_connfd, rec_buffer + total_num_received_bytes, num_bytes_left);
+                const ssize_t num_received_bytes = socket_recv(tcp_connfd, rec_buffer + total_num_received_bytes, num_bytes_left);
 
                 total_num_received_bytes += num_received_bytes;
                 num_bytes_left -= static_cast<size_t>(num_received_bytes);
@@ -521,12 +519,12 @@ namespace lumos
                 }
             }
 
-            close(tcp_connfd);
+            socket_close(tcp_connfd);
 
             return received_data;
         }
 
-        inline void populateGuiElementWithData(const duoplot::GuiElementType type,
+        inline void populateGuiElementWithData(const lumos::GuiElementType type,
                                                const std::string &handle_string,
                                                const UInt8ArrayView &data_view)
         {
@@ -544,35 +542,35 @@ namespace lumos
             }
             else
             {
-                if (type == duoplot::GuiElementType::Button)
+                if (type == lumos::GuiElementType::Button)
                 {
                     gui_element_handles[handle_string] = std::make_shared<ButtonInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::Checkbox)
+                else if (type == lumos::GuiElementType::Checkbox)
                 {
                     gui_element_handles[handle_string] = std::make_shared<CheckboxInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::Slider)
+                else if (type == lumos::GuiElementType::Slider)
                 {
                     gui_element_handles[handle_string] = std::make_shared<SliderInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::TextLabel)
+                else if (type == lumos::GuiElementType::TextLabel)
                 {
                     gui_element_handles[handle_string] = std::make_shared<TextLabelInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::ListBox)
+                else if (type == lumos::GuiElementType::ListBox)
                 {
                     gui_element_handles[handle_string] = std::make_shared<ListBoxInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::EditableText)
+                else if (type == lumos::GuiElementType::EditableText)
                 {
                     gui_element_handles[handle_string] = std::make_shared<EditableTextInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::DropdownMenu)
+                else if (type == lumos::GuiElementType::DropdownMenu)
                 {
                     gui_element_handles[handle_string] = std::make_shared<DropdownMenuInternal>(handle_string, data_view);
                 }
-                else if (type == duoplot::GuiElementType::RadioButtonGroup)
+                else if (type == lumos::GuiElementType::RadioButtonGroup)
                 {
                     gui_element_handles[handle_string] = std::make_shared<RadioButtonGroupInternal>(handle_string, data_view);
                 }
@@ -596,7 +594,7 @@ namespace lumos
             for (std::size_t k = 0; k < num_gui_objects; k++)
             {
                 // Receive[1]: Gui element type (std::uint8_t)
-                const duoplot::GuiElementType type = static_cast<duoplot::GuiElementType>(raw_data[idx]);
+                const lumos::GuiElementType type = static_cast<lumos::GuiElementType>(raw_data[idx]);
                 idx += sizeof(std::uint8_t);
 
                 // Receive[2]: Handle string length (std::uint8_t)
@@ -638,7 +636,7 @@ namespace lumos
 
             const std::uint8_t *const raw_data = received_gui_data.data();
 
-            const duoplot::GuiElementType type{raw_data[idx]};
+            const lumos::GuiElementType type{raw_data[idx]};
             idx += sizeof(std::uint8_t);
 
             const std::uint8_t handle_string_length = raw_data[1];

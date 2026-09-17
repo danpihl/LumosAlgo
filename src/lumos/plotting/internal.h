@@ -1,21 +1,7 @@
 #ifndef DUOPLOT_INTERNAL_H_
 #define DUOPLOT_INTERNAL_H_
 
-#include <arpa/inet.h>
-#include <errno.h>
-#include <net/if.h>
-#include <netinet/if_ether.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/resource.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include "socket_compat.h"
 
 #include <chrono>
 #include <cstdint>
@@ -66,7 +52,7 @@ namespace lumos
 
             ~UdpClient()
             {
-                close(sock_file_descr_);
+                socket_close(sock_file_descr_);
             }
 
             template <int N>
@@ -83,7 +69,7 @@ namespace lumos
                 {
                     throw std::runtime_error("Invalid socket!");
                 }
-                else if (sendto(sock_file_descr_, data, num_bytes, 0, tx_addr_ptr_, sizeof(tx_addr_)) < 0)
+                else if (sendto(sock_file_descr_, (const char*)data, num_bytes, 0, tx_addr_ptr_, sizeof(tx_addr_)) < 0)
                 {
                     throw std::runtime_error("sendto failed!");
                 }
@@ -136,8 +122,8 @@ namespace lumos
 
             const uint64_t num_bytes_to_send = input_array.size();
 
-            write(tcp_sockfd, &num_bytes_to_send, sizeof(uint64_t));
-            write(tcp_sockfd, input_array.data(), input_array.size());
+            socket_send(tcp_sockfd, &num_bytes_to_send, sizeof(uint64_t));
+            socket_send(tcp_sockfd, input_array.data(), input_array.size());
         }
 
         inline void sendThroughTcpInterface(const UInt8ArrayView &input_array, const uint64_t port_num)
@@ -161,10 +147,10 @@ namespace lumos
 
             const uint64_t num_bytes_to_send = input_array.size();
 
-            write(tcp_sockfd, &num_bytes_to_send, sizeof(uint64_t));
-            write(tcp_sockfd, input_array.data(), input_array.size());
+            socket_send(tcp_sockfd, &num_bytes_to_send, sizeof(uint64_t));
+            socket_send(tcp_sockfd, input_array.data(), input_array.size());
 
-            close(tcp_sockfd);
+            socket_close(tcp_sockfd);
         }
 
         inline void sendThroughQueryUdpInterface(const UInt8ArrayView &input_array)
@@ -389,6 +375,9 @@ namespace lumos
 
         inline bool isDuoplotRunning()
         {
+#ifdef _WIN32
+            return false;
+#else
             char path[1035];
 
             FILE *const fp = popen("ps -ef | grep duoplot", "r");
@@ -430,6 +419,7 @@ namespace lumos
             pclose(fp);
 
             return duoplot_running;
+#endif  /* _WIN32 */
         }
 
     } // namespace internal
