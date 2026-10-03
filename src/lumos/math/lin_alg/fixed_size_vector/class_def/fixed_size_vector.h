@@ -5,7 +5,6 @@
 
 #include <cmath>
 #include <cstdint>
-#include <iostream>
 
 #include "lumos/math/misc/forward_decl.h"
 
@@ -36,10 +35,6 @@ namespace lumos
 
     Vector<T> toDynamicVector() const;
   };
-
-  // Stream operator declaration
-  template <typename T, uint16_t N>
-  std::ostream &operator<<(std::ostream &os, const FixedSizeVector<T, N> &v);
 
 } // namespace lumos
 

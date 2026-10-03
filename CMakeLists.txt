@@ -33,6 +33,11 @@ include_directories(${CMAKE_SOURCE_DIR}/external/nlohmann/include)
 
 add_compile_options(-Wall -Wextra -pedantic)
 
+# The math headers default to a small assert with no OS or stream dependencies,
+# so that they build for embedded targets without any defines. On the desktop
+# use the assert from lumos/logging.h instead, which prints the message
+add_compile_definitions(LUMOS_ASSERT_USE_LOGGING)
+
 # STB
 set(STB_SOURCE_DIR ${CMAKE_SOURCE_DIR}/third_party/stb)
 
@@ -52,6 +57,8 @@ add_subdirectory(src/lumos/math/lin_alg/matrix_dynamic/test)
 add_subdirectory(src/lumos/math/filters/test)
 add_subdirectory(src/lumos/math/geometry/test)
 add_subdirectory(src/lumos/math/transformations/test)
+add_subdirectory(src/lumos/math/estimation/test)
+add_subdirectory(src/lumos/math/misc/test)
 add_subdirectory(src/lumos/math/fft/test)
 add_subdirectory(src/lumos/test_reader)
 add_subdirectory(src/lumos/binary_io/test)

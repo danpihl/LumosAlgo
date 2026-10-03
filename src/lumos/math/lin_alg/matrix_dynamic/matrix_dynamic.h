@@ -4,7 +4,9 @@
 #include <cmath>
 #include <cstring>
 
-#include "lumos/logging.h"
+#include <iostream>
+#include <string>
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/lin_alg/matrix_dynamic/class_def/matrix_dynamic.h"
 #include "lumos/math/misc/math_macros.h"
 

@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 
 namespace lumos
 {

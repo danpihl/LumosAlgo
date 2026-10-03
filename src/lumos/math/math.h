@@ -39,8 +39,15 @@
 #include "lumos/math/transformations/se3.h"
 #include "lumos/math/curves/curves.h"
 #include "lumos/math/filters/filters.h"
+#include "lumos/math/estimation/attitude_estimator.h"
 
 #include "lumos/math/pre_defs.h"
+
+// Stream output for the fixed size types
+#include "lumos/math/lin_alg/fixed_size_vector/fixed_size_vector_io.h"
+#include "lumos/math/lin_alg/matrix_fixed/matrix_fixed_io.h"
+#include "lumos/math/lin_alg/vector_low_dim/vec_io.h"
+#include "lumos/math/transformations/transformations_io.h"
 // clang-format on
 
 #endif // LUMOS_MATH_MATH_H_

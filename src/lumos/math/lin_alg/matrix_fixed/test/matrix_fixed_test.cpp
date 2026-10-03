@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "lumos/math/lin_alg/matrix_fixed/matrix_fixed.h"
+#include "lumos/math/lin_alg/matrix_fixed/matrix_fixed_io.h"
 #include "lumos/math/lin_alg/fixed_size_vector/fixed_size_vector.h"
 
 namespace lumos

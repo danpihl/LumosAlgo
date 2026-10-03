@@ -2,7 +2,6 @@
 #define LUMOS_MATH_TRANSFORMATIONS_CLASS_DEF_QUATERNION_H_
 
 #include <cmath>
-#include <iostream>
 
 #include "lumos/math/lin_alg/matrix_fixed/matrix_fixed.h"
 #include "lumos/math/misc/forward_decl.h"
@@ -53,13 +52,6 @@ namespace lumos
     // Normalization
     constexpr void normalize();
     Quaternion normalized() const;
-
-    // Output operator
-    friend std::ostream &operator<<(std::ostream &os, const Quaternion &q)
-    {
-      os << "(" << q.w << ", " << q.x << ", " << q.y << ", " << q.z << ")";
-      return os;
-    }
   };
 
 } // namespace lumos

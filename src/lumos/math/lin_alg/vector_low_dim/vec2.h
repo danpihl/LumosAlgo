@@ -185,15 +185,6 @@ namespace lumos
     return Vec2<T>(-v.x, -v.y);
   }
 
-  template <typename T>
-  std::ostream &operator<<(std::ostream &os, const Vec2<T> &v)
-  {
-    std::string s =
-        "[ " + std::to_string(v.x) + ", " + std::to_string(v.y) + " ]";
-    os << s;
-    return os;
-  }
-
 } // namespace lumos
 
 #endif // LUMOS_MATH_LIN_ALG_VECTOR_LOW_DIM_VEC2_H_

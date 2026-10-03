@@ -229,15 +229,6 @@ namespace lumos
   }
 
   template <typename T>
-  std::ostream &operator<<(std::ostream &os, const Vec3<T> &v)
-  {
-    std::string s = "[ " + std::to_string(v.x) + ", " + std::to_string(v.y) +
-                    ", " + std::to_string(v.z) + " ]";
-    os << s;
-    return os;
-  }
-
-  template <typename T>
   T angleBetweenVectors(const Vec3<T> v0, const Vec3<T> v1)
   {
     return std::acos((v0 * v1) / (v0.norm() * v1.norm()));

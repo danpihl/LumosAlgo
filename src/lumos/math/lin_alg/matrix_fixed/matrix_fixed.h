@@ -5,7 +5,7 @@
 #include <cstring>
 #include <limits>
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/lin_alg/matrix_fixed/class_def/matrix_fixed.h"
 #include "lumos/math/misc/math_macros.h"
 
@@ -269,6 +269,8 @@ namespace lumos
   template <typename T, uint16_t R, uint16_t C>
   std::optional<SVDMatrices<T, R, C>> FixedSizeMatrix<T, R, C>::svd() const
   {
+    static_assert(R >= C, "SVD requires R >= C.");
+
     constexpr uint16_t M = R;
     constexpr uint16_t N = C;
 
@@ -353,6 +355,7 @@ namespace lumos
 
     // Compute singular values and U
     FixedSizeMatrix<T, M, N> S_diag;
+    S_diag.fill(T(0));
     for (uint16_t j = 0; j < N; ++j)
     {
       T norm = T(0);
@@ -369,15 +372,14 @@ namespace lumos
 
     // Fill result
     SVDMatrices<T, R, C> result;
-    result.U = U;
-    result.S = S_diag;
-    // V in Jacobi method is actually V, but we want Vt
-    for (uint16_t i = 0; i < N; ++i)
-      for (uint16_t j = 0; j < N; ++j)
-        result.Vt(i, j) = V(j, i);
+    // The matrix is u_matrix * sigma_matrix * v_matrix.transposed()
+    result.u_matrix = U;
+    result.sigma_matrix = S_diag;
+    result.v_matrix = V;
 
     return result;
   }
+
   template <typename T, uint16_t R, uint16_t C>
   std::optional<QRResult<T, R, C>> FixedSizeMatrix<T, R, C>::qrDecomposition() const
   {
@@ -875,30 +877,6 @@ namespace lumos
       }
     }
     return ones_matrix;
-  }
-
-  template <typename T, uint16_t R, uint16_t C>
-  std::ostream &operator<<(std::ostream &os, const FixedSizeMatrix<T, R, C> &m)
-  {
-    std::string s = "";
-
-    for (size_t r = 0; r < R; r++)
-    {
-      s = s + "[ ";
-      for (size_t c = 0; c < C; c++)
-      {
-        s = s + std::to_string(m(r, c));
-        if (c != C - 1)
-        {
-          s = s + ", ";
-        }
-      }
-      s = s + " ]\n";
-    }
-
-    os << s;
-
-    return os;
   }
 
   template <typename T, uint16_t R, uint16_t C>

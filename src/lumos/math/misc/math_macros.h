@@ -1,7 +1,7 @@
 #ifndef LUMOS_MATH_MISC_MATH_MACROS_H_
 #define LUMOS_MATH_MISC_MATH_MACROS_H_
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 
 namespace lumos
 {

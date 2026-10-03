@@ -195,16 +195,6 @@ namespace lumos
     return Vec4<T>(-v.x, -v.y, -v.z, -v.w);
   }
 
-  template <typename T>
-  std::ostream &operator<<(std::ostream &os, const Vec4<T> &v)
-  {
-    std::string s = "[ " + std::to_string(v.x) + ", " + std::to_string(v.y) +
-                    ", " + std::to_string(v.z) + ", " + std::to_string(v.w) +
-                    " ]";
-    os << s;
-    return os;
-  }
-
 } // namespace lumos
 
 #endif // LUMOS_MATH_LIN_ALG_VECTOR_LOW_DIM_VEC4_H_

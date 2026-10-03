@@ -5,7 +5,7 @@
 #include <cmath>
 #include <utility>
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/geometry/class_def/plane.h"
 #include "lumos/math/lin_alg.h"
 

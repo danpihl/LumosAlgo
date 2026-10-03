@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "lumos/math/lin_alg/fixed_size_vector/fixed_size_vector.h"
+#include "lumos/math/lin_alg/fixed_size_vector/fixed_size_vector_io.h"
 
 namespace lumos
 {

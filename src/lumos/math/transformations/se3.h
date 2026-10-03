@@ -154,14 +154,6 @@ namespace lumos
     return pose0 * SE3<T>::exp(Twist3<T>(t * delta.linear, t * delta.angular));
   }
 
-  template <typename T>
-  std::ostream &operator<<(std::ostream &os, const SE3<T> &pose)
-  {
-    os << "rotation:\n"
-       << pose.rotation << "translation: " << pose.translation;
-    return os;
-  }
-
   using SE3d = SE3<double>;
   using SE3f = SE3<float>;
   using Twist3d = Twist3<double>;

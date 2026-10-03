@@ -160,6 +160,66 @@ namespace lumos
     EXPECT_DOUBLE_EQ(md(0, 0), 1.5);
   }
 
+  TEST(FixedSizeMatrixSvdTest, ReconstructsSquareAndTallMatrices)
+  {
+    FixedSizeMatrix<double, 3, 3> square;
+    FixedSizeMatrix<double, 4, 3> tall;
+    double value = 1.0;
+    for (size_t r = 0; r < 4; r++)
+    {
+      for (size_t c = 0; c < 3; c++)
+      {
+        // Not symmetric and not rank deficient
+        tall(r, c) = std::sin(value) + ((r == c) ? 2.0 : 0.0);
+        if (r < 3)
+        {
+          square(r, c) = std::cos(2.0 * value) + ((r == c) ? 3.0 : 0.0);
+        }
+        value += 1.0;
+      }
+    }
+
+    const auto square_svd = square.svd();
+    ASSERT_TRUE(square_svd.has_value());
+    const FixedSizeMatrix<double, 3, 3> square_back =
+        square_svd->u_matrix * square_svd->sigma_matrix * square_svd->v_matrix.transposed();
+    const auto tall_svd = tall.svd();
+    ASSERT_TRUE(tall_svd.has_value());
+    const FixedSizeMatrix<double, 4, 3> tall_back =
+        tall_svd->u_matrix * tall_svd->sigma_matrix * tall_svd->v_matrix.transposed();
+
+    for (size_t r = 0; r < 4; r++)
+    {
+      for (size_t c = 0; c < 3; c++)
+      {
+        EXPECT_NEAR(tall_back(r, c), tall(r, c), 1e-9);
+        if (r < 3)
+        {
+          EXPECT_NEAR(square_back(r, c), square(r, c), 1e-9);
+        }
+      }
+    }
+
+    // Singular values are non-negative, sigma is diagonal, and V is orthogonal
+    const FixedSizeMatrix<double, 3, 3> vtv =
+        square_svd->v_matrix.transposed() * square_svd->v_matrix;
+    for (size_t r = 0; r < 3; r++)
+    {
+      for (size_t c = 0; c < 3; c++)
+      {
+        EXPECT_NEAR(vtv(r, c), (r == c) ? 1.0 : 0.0, 1e-9);
+        if (r == c)
+        {
+          EXPECT_GE(square_svd->sigma_matrix(r, c), 0.0);
+        }
+        else
+        {
+          EXPECT_EQ(square_svd->sigma_matrix(r, c), 0.0);
+        }
+      }
+    }
+  }
+
   // Conversions between fixed size and dynamic types
 
   TEST(ConversionsTest, FixedToDynamicMatrixRoundTrip)

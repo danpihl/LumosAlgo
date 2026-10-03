@@ -10,7 +10,9 @@
 #include <utility>
 #include <algorithm>
 
-#include "lumos/logging.h"
+#include <cstring>
+#include <new>
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/misc/forward_decl.h"
 
 namespace lumos

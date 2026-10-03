@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <utility>
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/lin_alg/vector_dynamic/vector_dynamic.h"
 
 namespace lumos

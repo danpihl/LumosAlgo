@@ -6,7 +6,7 @@
 #include <cstdarg>
 #include <utility>
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/lin_alg/matrix_dynamic/matrix_dynamic.h"
 
 namespace lumos

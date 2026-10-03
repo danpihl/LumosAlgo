@@ -163,13 +163,6 @@ namespace lumos
     return pose0 * SE2<T>::exp(Twist2<T>(t * delta.linear, t * delta.angular));
   }
 
-  template <typename T>
-  std::ostream &operator<<(std::ostream &os, const SE2<T> &pose)
-  {
-    os << "theta: " << pose.theta << ", translation: " << pose.translation;
-    return os;
-  }
-
   using SE2d = SE2<double>;
   using SE2f = SE2<float>;
   using Twist2d = Twist2<double>;

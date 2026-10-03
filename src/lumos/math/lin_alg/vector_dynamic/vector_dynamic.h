@@ -8,7 +8,9 @@
 #include <type_traits>
 #include <utility>
 
-#include "lumos/logging.h"
+#include <iostream>
+#include <string>
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/lin_alg/vector_dynamic/class_def/vector_dynamic.h"
 #include "lumos/math/misc/math_macros.h"
 

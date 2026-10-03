@@ -1,7 +1,9 @@
+#ifndef LUMOS_MATH_LIN_ALG_FIXED_SIZE_VECTOR_FIXED_SIZE_VECTOR_H_
+#define LUMOS_MATH_LIN_ALG_FIXED_SIZE_VECTOR_FIXED_SIZE_VECTOR_H_
+
 #include "lumos/math/lin_alg/fixed_size_vector/class_def/fixed_size_vector.h"
 #include <cmath>
 #include <initializer_list>
-#include <iostream>
 
 namespace lumos
 {
@@ -79,20 +81,6 @@ namespace lumos
   }
 
   template <typename T, uint16_t N>
-  std::ostream &operator<<(std::ostream &os, const FixedSizeVector<T, N> &v)
-  {
-    os << "[";
-    for (uint16_t i = 0; i < N; ++i)
-    {
-      os << v[i];
-      if (i < N - 1)
-        os << ", ";
-    }
-    os << "]";
-    return os;
-  }
-
-  template <typename T, uint16_t N>
   Vector<T> FixedSizeVector<T, N>::toDynamicVector() const
   {
     Vector<T> dynamic_vector(N);
@@ -104,3 +92,5 @@ namespace lumos
   }
 
 } // namespace lumos
+
+#endif // LUMOS_MATH_LIN_ALG_FIXED_SIZE_VECTOR_FIXED_SIZE_VECTOR_H_

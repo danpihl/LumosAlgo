@@ -6,7 +6,7 @@
 #include <optional>
 #include <complex>
 
-#include "lumos/logging.h"
+#include "lumos/math/misc/assert.h"
 #include "lumos/math/misc/forward_decl.h"
 
 namespace lumos

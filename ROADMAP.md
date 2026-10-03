@@ -110,7 +110,7 @@ All on `FixedSizeMatrix`, with no heap allocation.
 - [x] LU decomposition with partial pivoting (`luDecomposition()`); one
       `float` test currently fails
 - [x] QR decomposition (`qrDecomposition()`)
-- [x] SVD (`svd()`)
+- [x] SVD for matrices with at least as many rows as columns (`svd()`)
 - [x] Matrix norms: Frobenius, one, infinity and p-norm
 - [ ] Cholesky (LLT/LDLT) for symmetric positive definite matrices such as
       covariances and cost matrices (`cholesky()` is a placeholder that
@@ -149,7 +149,13 @@ All on `FixedSizeMatrix`, with no heap allocation.
 ## 3. State estimation
 
 - [ ] Kalman filters: linear, extended, unscented, error-state
-- [ ] Attitude filters: complementary, Madgwick, Mahony
+- [x] IMU attitude and attitude rate estimator: complementary filter on the
+      rotation group (Mahony) with gyro bias estimation, accelerometer
+      rejection, optional magnetometer, body and world angular rate and Euler
+      rates (`estimation/attitude_estimator.h`)
+- [ ] Other attitude filters: Madgwick, error-state Kalman filter
+- [ ] Attitude estimator options: configurable world frame (NED), magnetic
+      declination, adaptive gains, centripetal acceleration compensation
 - [ ] Simple estimators: alpha-beta filter, recursive least squares
 - [ ] Sensor fusion helpers: IMU preintegration, covariance propagation
 
@@ -299,15 +305,36 @@ Manipulator planning:
 
 ## 12. Platform support
 
-- [ ] Hardware abstraction for time and logging, so that the core has no OS
-      dependency (`lumos/logging.h` currently needs `<sys/time.h>`, `<thread>`
-      and `<mutex>`)
+The library stays plain, platform-independent standard C++17: no `#if` on
+platform, compiler or architecture, no vendor or OS headers, and no compiler
+extensions. Embedded support comes from removing dependencies, not from adding
+target-specific code.
+
+- [x] The fixed-size math builds for bare metal as strict C++17 with
+      `-fno-exceptions -fno-rtti`: `lin_alg/matrix_fixed`,
+      `lin_alg/fixed_size_vector`, `lin_alg/vector_low_dim`, `transformations`,
+      `misc`, and `estimation`. Checked with `check.cpp` in the repo root on
+      arm-none-eabi-g++ (Cortex-M0+) and the host compiler
+- [x] Assert without OS or stream dependencies (`misc/assert.h`), with an
+      application-supplied handler. The assert from `lumos/logging.h` is
+      opt-in through `LUMOS_ASSERT_USE_LOGGING`, which LumosAlgo's CMake sets
+- [x] `<iostream>` is not reachable from the fixed-size headers. Stream output
+      is in separate opt-in headers (`vec_io.h`, `matrix_fixed_io.h`,
+      `fixed_size_vector_io.h`, `transformations_io.h`)
+- [ ] The same for filters, curves, FFT and the dynamic `Matrix`/`Vector`,
+      which throw and allocate
+- [ ] Portable constants in place of the non-standard `M_PI` (filters and
+      curves; this is what stops them compiling as strict C++17)
+- [ ] `<complex>` and `<optional>` in `matrix_fixed`: `<complex>` pulls in
+      `<sstream>`, and is only needed by the placeholder `eigen()`
+- [ ] Hardware abstraction for time and logging, so that `lumos/logging.h`
+      itself has no OS dependency (it needs `<sys/time.h>`, `<thread>` and
+      `<mutex>`)
 - [ ] Build configuration flags for optional features and acceleration
 - [ ] SIMD backends, selected at compile time, with the plain C++
       implementation as the reference
-- [ ] Bare-metal profile: no heap, no exceptions, no RTTI
-- [ ] Portable constants in place of the non-standard `M_PI`
-- [ ] Continuous integration across compilers and targets
+- [ ] Continuous integration across compilers and targets, running the
+      `check.cpp` commands
 
 ## 13. Probability and statistics
 
