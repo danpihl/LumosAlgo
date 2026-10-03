@@ -1,5 +1,5 @@
 # Test executable for matrix_fixed module
-add_executable(matrix_fixed_test matrix_fixed_test.cpp qr_decomposition_test.cpp)
+add_executable(matrix_fixed_test matrix_fixed_test.cpp qr_decomposition_test.cpp matrix_fixed_operators_test.cpp)
 
 # Link with Google Test libraries
 target_link_libraries(matrix_fixed_test ${GTEST_LIB_FILES})

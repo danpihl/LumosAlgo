@@ -5,13 +5,16 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 
 namespace lumos
 {
 
   template <typename T>
-  IIRFilter<T>::IIRFilter() : numerator_order_(0), denominator_order_(0) {}
+  IIRFilter<T>::IIRFilter() : numerator_order_(0), denominator_order_(0)
+  {
+  }
 
   template <typename T>
   IIRFilter<T>::IIRFilter(const std::vector<T> &b_coeffs,
@@ -29,6 +32,13 @@ namespace lumos
 
     x_delay_line_.resize(b_coefficients_.size(), T(0));
     y_delay_line_.resize(a_coefficients_.size(), T(0));
+  }
+
+  template <typename T>
+  IIRFilter<T>::IIRFilter(const Vector<T> &b_coeffs, const Vector<T> &a_coeffs)
+      : IIRFilter(std::vector<T>(b_coeffs.begin(), b_coeffs.end()),
+                  std::vector<T>(a_coeffs.begin(), a_coeffs.end()))
+  {
   }
 
   template <typename T>
@@ -73,7 +83,9 @@ namespace lumos
         a_coefficients_(other.a_coefficients_),
         x_delay_line_(other.x_delay_line_), y_delay_line_(other.y_delay_line_),
         numerator_order_(other.numerator_order_),
-        denominator_order_(other.denominator_order_) {}
+        denominator_order_(other.denominator_order_)
+  {
+  }
 
   template <typename T>
   IIRFilter<T>::IIRFilter(IIRFilter &&other) noexcept
@@ -82,7 +94,9 @@ namespace lumos
         x_delay_line_(std::move(other.x_delay_line_)),
         y_delay_line_(std::move(other.y_delay_line_)),
         numerator_order_(other.numerator_order_),
-        denominator_order_(other.denominator_order_) {}
+        denominator_order_(other.denominator_order_)
+  {
+  }
 
   template <typename T>
   IIRFilter<T> &IIRFilter<T>::operator=(const IIRFilter &other)
@@ -175,6 +189,19 @@ namespace lumos
   }
 
   template <typename T>
+  Vector<T> IIRFilter<T>::filter(const Vector<T> &input)
+  {
+    Vector<T> output(input.size());
+
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+      output(i) = filter(input(i));
+    }
+
+    return output;
+  }
+
+  template <typename T>
   void IIRFilter<T>::filter(const T *input, T *output, size_t length)
   {
     for (size_t i = 0; i < length; ++i)
@@ -226,6 +253,14 @@ namespace lumos
 
     x_delay_line_.resize(b_coefficients_.size(), T(0));
     y_delay_line_.resize(a_coefficients_.size(), T(0));
+  }
+
+  template <typename T>
+  void IIRFilter<T>::setCoefficients(const Vector<T> &b_coeffs,
+                                     const Vector<T> &a_coeffs)
+  {
+    setCoefficients(std::vector<T>(b_coeffs.begin(), b_coeffs.end()),
+                    std::vector<T>(a_coeffs.begin(), a_coeffs.end()));
   }
 
   template <typename T>
@@ -446,6 +481,394 @@ namespace lumos
   IIRFilter<T> IIRFilter<T>::dcBlocker(T cutoff_freq, T sample_rate)
   {
     return firstOrderHighPass(cutoff_freq, sample_rate);
+  }
+
+  namespace internal
+  {
+
+    // Product of two polynomials given by their coefficients
+    template <typename T>
+    std::vector<T> polynomialMultiply(const std::vector<T> &p0,
+                                      const std::vector<T> &p1)
+    {
+      std::vector<T> res(p0.size() + p1.size() - 1, T(0));
+      for (size_t i = 0; i < p0.size(); ++i)
+      {
+        for (size_t j = 0; j < p1.size(); ++j)
+        {
+          res[i + j] += p0[i] * p1[j];
+        }
+      }
+      return res;
+    }
+
+    // Roots of c[0] * z^n + c[1] * z^(n - 1) + ... + c[n]. Leading zero
+    // coefficients are ignored. Roots of multiplicity m are only accurate to
+    // about the m-th root of the machine precision, which is inherent to finding
+    // roots from coefficients
+    template <typename T>
+    std::vector<std::complex<T>> polynomialRoots(const std::vector<T> &coeffs)
+    {
+      std::vector<std::complex<T>> roots;
+
+      size_t first = 0;
+      while (first < coeffs.size() && coeffs[first] == T(0))
+      {
+        ++first;
+      }
+      size_t last = coeffs.size();
+      // Trailing zero coefficients are roots at the origin
+      while (last > first + 1 && coeffs[last - 1] == T(0))
+      {
+        roots.push_back(std::complex<T>(0, 0));
+        --last;
+      }
+      if (last - first < 2)
+      {
+        return roots;
+      }
+
+      // Monic polynomial z^n + c[1] * z^(n - 1) + ... + c[n], with c[n] != 0
+      const size_t n = last - first - 1;
+      std::vector<T> c(n + 1);
+      for (size_t i = 0; i <= n; ++i)
+      {
+        c[i] = coeffs[first + i] / coeffs[first];
+      }
+
+      if (n == 1)
+      {
+        roots.push_back(std::complex<T>(-c[1], 0));
+        return roots;
+      }
+
+      if (n == 2)
+      {
+        const T disc = c[1] * c[1] - T(4) * c[2];
+        if (disc >= T(0))
+        {
+          // Avoid cancellation by computing the larger root first
+          const T sign = (c[1] < T(0)) ? T(-1) : T(1);
+          const T r0 = -(c[1] + sign * std::sqrt(disc)) / T(2);
+          roots.push_back(std::complex<T>(r0, 0));
+          roots.push_back(std::complex<T>(c[2] / r0, 0));
+        }
+        else
+        {
+          const T re = -c[1] / T(2);
+          const T im = std::sqrt(-disc) / T(2);
+          roots.push_back(std::complex<T>(re, im));
+          roots.push_back(std::complex<T>(re, -im));
+        }
+        return roots;
+      }
+
+      // Aberth-Ehrlich iteration, which finds all roots simultaneously. Start on
+      // a circle with the geometric mean of the root magnitudes as radius
+      const T radius = std::pow(std::abs(c[n]), T(1) / T(n));
+      std::vector<std::complex<T>> z(n);
+      for (size_t k = 0; k < n; ++k)
+      {
+        const T angle = T(2) * T(M_PI) * T(k) / T(n) + T(0.4);
+        z[k] = std::polar(radius, angle);
+      }
+
+      const size_t max_iterations = 500;
+      const T tolerance = T(4) * std::numeric_limits<T>::epsilon();
+      for (size_t iteration = 0; iteration < max_iterations; ++iteration)
+      {
+        bool converged = true;
+        for (size_t k = 0; k < n; ++k)
+        {
+          // Evaluate the polynomial and its derivative with Horner's method
+          std::complex<T> p(c[0], 0);
+          std::complex<T> dp(0, 0);
+          for (size_t i = 1; i <= n; ++i)
+          {
+            dp = dp * z[k] + p;
+            p = p * z[k] + c[i];
+          }
+          if (p == std::complex<T>(0, 0))
+          {
+            continue;
+          }
+          if (dp == std::complex<T>(0, 0))
+          {
+            // Stationary point that is not a root, nudge away from it
+            z[k] += std::complex<T>(radius * T(1e-3), radius * T(1e-3));
+            converged = false;
+            continue;
+          }
+
+          const std::complex<T> newton_step = p / dp;
+          std::complex<T> repulsion(0, 0);
+          for (size_t j = 0; j < n; ++j)
+          {
+            if (j != k && z[j] != z[k])
+            {
+              repulsion += T(1) / (z[k] - z[j]);
+            }
+          }
+          const std::complex<T> step =
+              newton_step / (std::complex<T>(1, 0) - newton_step * repulsion);
+          z[k] -= step;
+
+          if (std::abs(step) > tolerance * std::max(T(1), std::abs(z[k])))
+          {
+            converged = false;
+          }
+        }
+        if (converged)
+        {
+          break;
+        }
+      }
+
+      roots.insert(roots.end(), z.begin(), z.end());
+      return roots;
+    }
+
+    // The functions below build a digital filter as a product of first and second
+    // order sections. Each section is an analog prototype mapped with the
+    // bilinear transform s = (1 - z^-1) / (1 + z^-1), for which the analog
+    // frequency that corresponds to the digital frequency f is tan(pi * f / fs)
+
+    template <typename T>
+    T prewarpedCutoff(const T cutoff_freq, const T sample_rate)
+    {
+      if (!(sample_rate > T(0)))
+      {
+        throw std::invalid_argument("Sample rate must be greater than 0");
+      }
+      if (!(cutoff_freq > T(0)) || !(cutoff_freq < sample_rate / T(2)))
+      {
+        throw std::invalid_argument(
+            "Cutoff frequency must be between 0 and half the sample rate");
+      }
+      return std::tan(T(M_PI) * cutoff_freq / sample_rate);
+    }
+
+    // Multiplies in the section w2 / (s^2 + c1 * s + w2)
+    template <typename T>
+    void appendLowPassBiquad(std::vector<T> &b, std::vector<T> &a, const T c1,
+                             const T w2)
+    {
+      const T norm = T(1) + c1 + w2;
+      b = polynomialMultiply(b, {w2 / norm, T(2) * w2 / norm, w2 / norm});
+      a = polynomialMultiply(
+          a, {T(1), T(2) * (w2 - T(1)) / norm, (T(1) - c1 + w2) / norm});
+    }
+
+    // Multiplies in the section s^2 / (s^2 + c1 * s + w2)
+    template <typename T>
+    void appendHighPassBiquad(std::vector<T> &b, std::vector<T> &a, const T c1,
+                              const T w2)
+    {
+      const T norm = T(1) + c1 + w2;
+      b = polynomialMultiply(b, {T(1) / norm, T(-2) / norm, T(1) / norm});
+      a = polynomialMultiply(
+          a, {T(1), T(2) * (w2 - T(1)) / norm, (T(1) - c1 + w2) / norm});
+    }
+
+    // Multiplies in the section w / (s + w)
+    template <typename T>
+    void appendLowPassFirstOrder(std::vector<T> &b, std::vector<T> &a, const T w)
+    {
+      const T norm = T(1) + w;
+      b = polynomialMultiply(b, {w / norm, w / norm});
+      a = polynomialMultiply(a, {T(1), (w - T(1)) / norm});
+    }
+
+    // Multiplies in the section s / (s + w)
+    template <typename T>
+    void appendHighPassFirstOrder(std::vector<T> &b, std::vector<T> &a, const T w)
+    {
+      const T norm = T(1) + w;
+      b = polynomialMultiply(b, {T(1) / norm, T(-1) / norm});
+      a = polynomialMultiply(a, {T(1), (w - T(1)) / norm});
+    }
+
+  } // namespace internal
+
+  // A filter is stable if all its poles are strictly inside the unit circle.
+  // Poles on the unit circle (e.g. an integrator) are reported as not stable
+  template <typename T>
+  bool IIRFilter<T>::isStable() const
+  {
+    if (a_coefficients_.empty())
+    {
+      return true;
+    }
+
+    // Schur-Cohn test: the step-down recursion gives the reflection
+    // coefficients of the denominator, which all have magnitude below one
+    // exactly when all roots are inside the unit circle. This avoids finding
+    // the roots
+    std::vector<T> c(a_coefficients_.size());
+    for (size_t i = 0; i < c.size(); ++i)
+    {
+      c[i] = a_coefficients_[i] / a_coefficients_[0];
+    }
+
+    std::vector<T> next(c.size());
+    for (size_t m = c.size() - 1; m >= 1; --m)
+    {
+      const T k = c[m];
+      if (!(std::abs(k) < T(1)))
+      {
+        return false;
+      }
+      const T den = T(1) - k * k;
+      for (size_t i = 1; i < m; ++i)
+      {
+        next[i] = (c[i] - k * c[m - i]) / den;
+      }
+      for (size_t i = 1; i < m; ++i)
+      {
+        c[i] = next[i];
+      }
+    }
+
+    return true;
+  }
+
+  // Poles of the transfer function in the z-plane. Includes the poles at the
+  // origin that a filter with more numerator than denominator coefficients has
+  template <typename T>
+  std::vector<std::complex<T>> IIRFilter<T>::getPoles() const
+  {
+    if (a_coefficients_.empty())
+    {
+      return {};
+    }
+    std::vector<T> a = a_coefficients_;
+    a.resize(std::max(a_coefficients_.size(), b_coefficients_.size()), T(0));
+    return internal::polynomialRoots(a);
+  }
+
+  // Zeros of the transfer function in the z-plane. Includes the zeros at the
+  // origin that a filter with more denominator than numerator coefficients has
+  template <typename T>
+  std::vector<std::complex<T>> IIRFilter<T>::getZeros() const
+  {
+    if (b_coefficients_.empty())
+    {
+      return {};
+    }
+    std::vector<T> b = b_coefficients_;
+    b.resize(std::max(a_coefficients_.size(), b_coefficients_.size()), T(0));
+    return internal::polynomialRoots(b);
+  }
+
+  // Maximally flat low-pass filter with -3 dB gain at cutoff_freq
+  template <typename T>
+  IIRFilter<T> IIRFilter<T>::butterworthLowPass(size_t order, T cutoff_freq,
+                                                T sample_rate)
+  {
+    if (order == 0)
+    {
+      throw std::invalid_argument("Filter order must be greater than 0");
+    }
+    const T wc = internal::prewarpedCutoff(cutoff_freq, sample_rate);
+
+    std::vector<T> b_coeffs = {T(1)};
+    std::vector<T> a_coeffs = {T(1)};
+
+    // One second order section per complex conjugate pole pair
+    for (size_t k = 0; k < order / 2; ++k)
+    {
+      const T damping =
+          T(2) * std::sin(T(M_PI) * T(2 * k + 1) / T(2 * order));
+      internal::appendLowPassBiquad(b_coeffs, a_coeffs, damping * wc, wc * wc);
+    }
+    // Odd orders have one real pole
+    if (order % 2 == 1)
+    {
+      internal::appendLowPassFirstOrder(b_coeffs, a_coeffs, wc);
+    }
+
+    return IIRFilter<T>(b_coeffs, a_coeffs);
+  }
+
+  // Maximally flat high-pass filter with -3 dB gain at cutoff_freq
+  template <typename T>
+  IIRFilter<T> IIRFilter<T>::butterworthHighPass(size_t order, T cutoff_freq,
+                                                 T sample_rate)
+  {
+    if (order == 0)
+    {
+      throw std::invalid_argument("Filter order must be greater than 0");
+    }
+    const T wc = internal::prewarpedCutoff(cutoff_freq, sample_rate);
+
+    std::vector<T> b_coeffs = {T(1)};
+    std::vector<T> a_coeffs = {T(1)};
+
+    for (size_t k = 0; k < order / 2; ++k)
+    {
+      const T damping =
+          T(2) * std::sin(T(M_PI) * T(2 * k + 1) / T(2 * order));
+      internal::appendHighPassBiquad(b_coeffs, a_coeffs, damping * wc, wc * wc);
+    }
+    if (order % 2 == 1)
+    {
+      internal::appendHighPassFirstOrder(b_coeffs, a_coeffs, wc);
+    }
+
+    return IIRFilter<T>(b_coeffs, a_coeffs);
+  }
+
+  // Chebyshev type I low-pass filter: equiripple in the passband, with the gain
+  // staying between -ripple_db and 0 dB up to cutoff_freq, where it is
+  // -ripple_db
+  template <typename T>
+  IIRFilter<T> IIRFilter<T>::chebyshevLowPass(size_t order, T cutoff_freq,
+                                              T ripple_db, T sample_rate)
+  {
+    if (order == 0)
+    {
+      throw std::invalid_argument("Filter order must be greater than 0");
+    }
+    if (!(ripple_db > T(0)))
+    {
+      throw std::invalid_argument("Passband ripple must be greater than 0 dB");
+    }
+    const T wc = internal::prewarpedCutoff(cutoff_freq, sample_rate);
+
+    // The analog prototype poles lie on an ellipse with these semi-axes
+    const T epsilon = std::sqrt(std::pow(T(10), ripple_db / T(10)) - T(1));
+    const T mu = std::asinh(T(1) / epsilon) / T(order);
+    const T sinh_mu = std::sinh(mu);
+    const T cosh_mu = std::cosh(mu);
+
+    std::vector<T> b_coeffs = {T(1)};
+    std::vector<T> a_coeffs = {T(1)};
+
+    for (size_t k = 0; k < order / 2; ++k)
+    {
+      const T theta = T(M_PI) * T(2 * k + 1) / T(2 * order);
+      const T sigma = sinh_mu * std::sin(theta) * wc;
+      const T omega = cosh_mu * std::cos(theta) * wc;
+      internal::appendLowPassBiquad(b_coeffs, a_coeffs, T(2) * sigma,
+                                    sigma * sigma + omega * omega);
+    }
+    if (order % 2 == 1)
+    {
+      internal::appendLowPassFirstOrder(b_coeffs, a_coeffs, sinh_mu * wc);
+    }
+
+    // The sections have unit gain at DC. For even orders DC is at the bottom
+    // of the ripple
+    if (order % 2 == 0)
+    {
+      const T dc_gain = std::pow(T(10), -ripple_db / T(20));
+      for (T &b : b_coeffs)
+      {
+        b *= dc_gain;
+      }
+    }
+
+    return IIRFilter<T>(b_coeffs, a_coeffs);
   }
 
 } // namespace lumos

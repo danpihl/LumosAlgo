@@ -25,7 +25,7 @@ namespace lumos
     Vec3<T> elementWiseMultiply(const Vec3<T> &factor_vector) const;
     Vec3<T> elementWiseDivide(const Vec3<T> &numerator_vector) const;
     Vec3<T> crossProduct(const Vec3<T> &right_vector) const;
-    Matrix<T> toCrossProductMatrix() const;
+    FixedSizeMatrix<T, 3, 3> toCrossProductMatrix() const;
     T angleBetweenVectors(const Vec3<T> &v) const;
   };
 

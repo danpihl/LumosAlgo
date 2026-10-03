@@ -15,6 +15,7 @@
 #include "lumos/math/lin_alg/vector_low_dim/vec2.h"
 #include "lumos/math/lin_alg/vector_low_dim/vec3.h"
 #include "lumos/math/lin_alg/vector_low_dim/vec4.h"
+#include "lumos/math/lin_alg/conversions.h"
 
 #include "lumos/math/transformations/euler_angles.h"
 #include "lumos/math/transformations/axis_angle.h"
@@ -32,6 +33,10 @@
 #include "lumos/math/image/image_rgba.h"
 
 #include "lumos/math/transformations/quaternion.h"
+#include "lumos/math/transformations/angles.h"
+#include "lumos/math/transformations/so3.h"
+#include "lumos/math/transformations/se2.h"
+#include "lumos/math/transformations/se3.h"
 #include "lumos/math/curves/curves.h"
 #include "lumos/math/filters/filters.h"
 

@@ -8,5 +8,6 @@
 #include "lumos/math/lin_alg/vector_low_dim/vec2.h"
 #include "lumos/math/lin_alg/vector_low_dim/vec3.h"
 #include "lumos/math/lin_alg/vector_low_dim/vec4.h"
+#include "lumos/math/lin_alg/conversions.h"
 
 #endif // LUMOS_MATH_LIN_ALG_H_

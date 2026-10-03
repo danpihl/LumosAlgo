@@ -76,6 +76,25 @@ namespace lumos
                    x * right_vector.y - y * right_vector.x);
   }
 
+  // Skew symmetric matrix K such that K * b = (*this) x b
+  template <typename T>
+  FixedSizeMatrix<T, 3, 3> Vec3<T>::toCrossProductMatrix() const
+  {
+    FixedSizeMatrix<T, 3, 3> m;
+    m(0, 0) = 0;
+    m(0, 1) = -z;
+    m(0, 2) = y;
+
+    m(1, 0) = z;
+    m(1, 1) = 0;
+    m(1, 2) = -x;
+
+    m(2, 0) = -y;
+    m(2, 1) = x;
+    m(2, 2) = 0;
+    return m;
+  }
+
   template <typename T>
   T Vec3<T>::angleBetweenVectors(const Vec3<T> &v) const
   {

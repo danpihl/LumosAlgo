@@ -624,250 +624,194 @@ namespace lumos
     return norm_inf() * inv_opt->norm_inf();
   }*/
 
-  /*template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator+(const FixedSizeMatrix<T, R, C>& m0, const FixedSizeMatrix<T, R, C>&
-  m1)
-  {
-      ASSERT(m0.numCols() == m1.numCols());
-      ASSERT(m0.numRows() == m1.numRows());
-      FixedSizeMatrix<T, R, C> res(m0.numRows(), m1.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator+(const FixedSizeMatrix<T, R, C> &m0,
+                                     const FixedSizeMatrix<T, R, C> &m1) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m0(r, c) + m1(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m0(r, c) + m1(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator-(const FixedSizeMatrix<T, R, C>& m0, const FixedSizeMatrix<T, R, C>&
-  m1)
-  {
-      ASSERT(m0.numCols() == m1.numCols());
-      ASSERT(m0.numRows() == m1.numRows());
-      FixedSizeMatrix<T, R, C> res(m0.numRows(), m1.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator-(const FixedSizeMatrix<T, R, C> &m0,
+                                     const FixedSizeMatrix<T, R, C> &m1) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m0(r, c) - m1(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m0(r, c) - m1(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator*(const FixedSizeMatrix<T, R, C>& m, const T f)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator*(const FixedSizeMatrix<T, R, C> &m,
+                                     const T f) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = f * m(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m(r, c) * f;
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator*(const T f, const FixedSizeMatrix<T, R, C>& m)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator*(const T f,
+                                     const FixedSizeMatrix<T, R, C> &m) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = f * m(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = f * m(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator^(const FixedSizeMatrix<T, R, C>& m0, const FixedSizeMatrix<T, R, C>&
-  m1)
-  {
-      ASSERT(m0.numRows() == m1.numRows());
-      ASSERT(m0.numCols() == m1.numCols());
+  // Element wise multiplication
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator^(const FixedSizeMatrix<T, R, C> &m0,
+                                     const FixedSizeMatrix<T, R, C> &m1) {
+    FixedSizeMatrix<T, R, C> res;
 
-      FixedSizeMatrix<T, R, C> res(m0.numRows(), m0.numCols());
-
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m0(r, c) * m1(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m0(r, c) * m1(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator/(const FixedSizeMatrix<T, R, C>& m0, const FixedSizeMatrix<T, R, C>&
-  m1)
-  {
-      ASSERT(m0.numRows() == m1.numRows());
-      ASSERT(m0.numCols() == m1.numCols());
+  // Element wise division
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator/(const FixedSizeMatrix<T, R, C> &m0,
+                                     const FixedSizeMatrix<T, R, C> &m1) {
+    FixedSizeMatrix<T, R, C> res;
 
-      FixedSizeMatrix<T, R, C> res(m0.numRows(), m0.numCols());
-
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m0(r, c) / m1(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m0(r, c) / m1(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator/(const FixedSizeMatrix<T, R, C>& m, const T f)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator/(const FixedSizeMatrix<T, R, C> &m,
+                                     const T f) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m(r, c) / f;
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m(r, c) / f;
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator/(const T f, const FixedSizeMatrix<T, R, C>& m)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator/(const T f,
+                                     const FixedSizeMatrix<T, R, C> &m) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = f / m(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = f / m(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator-(const FixedSizeMatrix<T, R, C>& m, const T f)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator-(const FixedSizeMatrix<T, R, C> &m,
+                                     const T f) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m(r, c) - f;
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m(r, c) - f;
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator-(const T f, const FixedSizeMatrix<T, R, C>& m)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator-(const T f,
+                                     const FixedSizeMatrix<T, R, C> &m) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = f - m(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = f - m(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator+(const FixedSizeMatrix<T, R, C>& m, const T f)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator+(const FixedSizeMatrix<T, R, C> &m,
+                                     const T f) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m(r, c) + f;
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = m(r, c) + f;
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator+(const T f, const FixedSizeMatrix<T, R, C>& m)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator+(const T f,
+                                     const FixedSizeMatrix<T, R, C> &m) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = m(r, c) + f;
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = f + m(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
-  operator-(const FixedSizeMatrix<T, R, C>& m)
-  {
-      FixedSizeMatrix<T, R, C> res(m.numRows(), m.numCols());
+  template <typename T, uint16_t R, uint16_t C>
+  FixedSizeMatrix<T, R, C> operator-(const FixedSizeMatrix<T, R, C> &m) {
+    FixedSizeMatrix<T, R, C> res;
 
-      for (size_t r = 0; r < res.numRows(); r++)
-      {
-          for (size_t c = 0; c < res.numCols(); c++)
-          {
-              res(r, c) = -m(r, c);
-          }
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        res(r, c) = -m(r, c);
       }
-      return res;
+    }
+    return res;
   }
 
-  template <typename T, uint16_t R, uint16_t C> Vector<T> operator*(const
-  FixedSizeMatrix<T, R, C>& m, const Vector<T>& v)
-  {
-      ASSERT(m.numCols() == v.size());
-      Vector<T> res(m.numRows());
-
-      for (size_t r = 0; r < m.numRows(); r++)
-      {
-          T p = 0.0f;
-          for (size_t c = 0; c < m.numCols(); c++)
-          {
-              p = p + m(r, c) * v(c);
-          }
-          res(r) = p;
+  template <typename T, uint16_t R, uint16_t C>
+  bool operator==(const FixedSizeMatrix<T, R, C> &m0,
+                  const FixedSizeMatrix<T, R, C> &m1) {
+    for (size_t r = 0; r < R; r++) {
+      for (size_t c = 0; c < C; c++) {
+        if (m0(r, c) != m1(r, c)) {
+          return false;
+        }
       }
-      return res;
+    }
+    return true;
   }
 
-  template <typename T, uint16_t R, uint16_t C> Vector<T> operator*(const
-  Vector<T>& v, const FixedSizeMatrix<T, R, C>& m)
-  {
-      ASSERT(m.numRows() == v.size());
-      Vector<T> res(m.numCols());
-
-      for (size_t c = 0; c < m.numCols(); c++)
-      {
-          T p = 0.0f;
-          for (size_t r = 0; r < m.numRows(); r++)
-          {
-              p = p + m(r, c) * v(r);
-          }
-          res(c) = p;
-      }
-      return res;
-  }*/
+  template <typename T, uint16_t R, uint16_t C>
+  bool operator!=(const FixedSizeMatrix<T, R, C> &m0,
+                  const FixedSizeMatrix<T, R, C> &m1) {
+    return !(m0 == m1);
+  }
 
   /*template <typename T, uint16_t R, uint16_t C> FixedSizeMatrix<T, R, C>
   FixedSizeMatrix<T, R, C>::getTranspose() const

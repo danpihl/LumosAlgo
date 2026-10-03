@@ -1,6 +1,7 @@
 #ifndef LUMOS_MATH_FILTERS_CLASS_DEF_FIR_FILTER_H_
 #define LUMOS_MATH_FILTERS_CLASS_DEF_FIR_FILTER_H_
 
+#include "lumos/math/lin_alg/vector_dynamic/vector_dynamic.h"
 #include "lumos/math/misc/forward_decl.h"
 #include <complex>
 #include <deque>
@@ -22,6 +23,7 @@ namespace lumos
     // Constructors
     FIRFilter();
     explicit FIRFilter(const std::vector<T> &coefficients);
+    explicit FIRFilter(const Vector<T> &coefficients);
     FIRFilter(std::initializer_list<T> coefficients);
     FIRFilter(size_t order, const T *coefficients);
 
@@ -36,6 +38,7 @@ namespace lumos
     // Core filtering operations
     T filter(T input);
     std::vector<T> filter(const std::vector<T> &input);
+    Vector<T> filter(const Vector<T> &input);
 
     // Batch processing with output buffer
     void filter(const T *input, T *output, size_t length);
@@ -46,6 +49,7 @@ namespace lumos
 
     // Filter configuration
     void setCoefficients(const std::vector<T> &coefficients);
+    void setCoefficients(const Vector<T> &coefficients);
     const std::vector<T> &getCoefficients() const;
 
     // Filter properties

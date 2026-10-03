@@ -8,24 +8,24 @@
 namespace lumos
 {
 
-    // Common type aliases for convenience
-    typedef BezierCurve2D<double> BezierCurve2Dd;
-    typedef BezierCurve3D<double> BezierCurve3Dd;
-    typedef BezierCurve2D<float> BezierCurve2Df;
-    typedef BezierCurve3D<float> BezierCurve3Df;
+  // Common type aliases for convenience
+  using BezierCurve2Dd = BezierCurve2D<double>;
+  using BezierCurve3Dd = BezierCurve3D<double>;
+  using BezierCurve2Df = BezierCurve2D<float>;
+  using BezierCurve3Df = BezierCurve3D<float>;
 
-    typedef BSplineCurve2D<double> BSplineCurve2Dd;
-    typedef BSplineCurve3D<double> BSplineCurve3Dd;
-    typedef BSplineCurve2D<float> BSplineCurve2Df;
-    typedef BSplineCurve3D<float> BSplineCurve3Df;
+  using BSplineCurve2Dd = BSplineCurve2D<double>;
+  using BSplineCurve3Dd = BSplineCurve3D<double>;
+  using BSplineCurve2Df = BSplineCurve2D<float>;
+  using BSplineCurve3Df = BSplineCurve3D<float>;
 
-    typedef QuinticPolynomial2D<double> QuinticPolynomial2Dd;
-    typedef QuinticPolynomial3D<double> QuinticPolynomial3Dd;
-    typedef QuinticPolynomial2D<float> QuinticPolynomial2Df;
-    typedef QuinticPolynomial3D<float> QuinticPolynomial3Df;
+  using QuinticPolynomial2Dd = QuinticPolynomial2D<double>;
+  using QuinticPolynomial3Dd = QuinticPolynomial3D<double>;
+  using QuinticPolynomial2Df = QuinticPolynomial2D<float>;
+  using QuinticPolynomial3Df = QuinticPolynomial3D<float>;
 
-    typedef QuinticPolynomial1D<double> QuinticPolynomial1Dd;
-    typedef QuinticPolynomial1D<float> QuinticPolynomial1Df;
+  using QuinticPolynomial1Dd = QuinticPolynomial1D<double>;
+  using QuinticPolynomial1Df = QuinticPolynomial1D<float>;
 
 } // namespace lumos
 

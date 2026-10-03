@@ -11,7 +11,9 @@ namespace lumos
 {
 
   template <typename T>
-  FIRFilter<T>::FIRFilter() : order_(0) {}
+  FIRFilter<T>::FIRFilter() : order_(0)
+  {
+  }
 
   template <typename T>
   FIRFilter<T>::FIRFilter(const std::vector<T> &coefficients)
@@ -19,6 +21,12 @@ namespace lumos
         order_(coefficients.size() > 0 ? coefficients.size() - 1 : 0)
   {
     delay_line_.resize(coefficients_.size(), T(0));
+  }
+
+  template <typename T>
+  FIRFilter<T>::FIRFilter(const Vector<T> &coefficients)
+      : FIRFilter(std::vector<T>(coefficients.begin(), coefficients.end()))
+  {
   }
 
   template <typename T>
@@ -39,12 +47,16 @@ namespace lumos
   template <typename T>
   FIRFilter<T>::FIRFilter(const FIRFilter &other)
       : coefficients_(other.coefficients_), delay_line_(other.delay_line_),
-        order_(other.order_) {}
+        order_(other.order_)
+  {
+  }
 
   template <typename T>
   FIRFilter<T>::FIRFilter(FIRFilter &&other) noexcept
       : coefficients_(std::move(other.coefficients_)),
-        delay_line_(std::move(other.delay_line_)), order_(other.order_) {}
+        delay_line_(std::move(other.delay_line_)), order_(other.order_)
+  {
+  }
 
   template <typename T>
   FIRFilter<T> &FIRFilter<T>::operator=(const FIRFilter &other)
@@ -111,6 +123,19 @@ namespace lumos
   }
 
   template <typename T>
+  Vector<T> FIRFilter<T>::filter(const Vector<T> &input)
+  {
+    Vector<T> output(input.size());
+
+    for (size_t i = 0; i < input.size(); ++i)
+    {
+      output(i) = filter(input(i));
+    }
+
+    return output;
+  }
+
+  template <typename T>
   void FIRFilter<T>::filter(const T *input, T *output, size_t length)
   {
     for (size_t i = 0; i < length; ++i)
@@ -144,13 +169,22 @@ namespace lumos
   }
 
   template <typename T>
+  void FIRFilter<T>::setCoefficients(const Vector<T> &coefficients)
+  {
+    setCoefficients(std::vector<T>(coefficients.begin(), coefficients.end()));
+  }
+
+  template <typename T>
   const std::vector<T> &FIRFilter<T>::getCoefficients() const
   {
     return coefficients_;
   }
 
   template <typename T>
-  size_t FIRFilter<T>::getOrder() const { return order_; }
+  size_t FIRFilter<T>::getOrder() const
+  {
+    return order_;
+  }
 
   template <typename T>
   size_t FIRFilter<T>::getNumCoefficients() const

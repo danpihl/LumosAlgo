@@ -5,41 +5,41 @@
 
 namespace lumos
 {
-    typedef AxisAngle<double> AxisAngled;
-    // typedef HomogeneousLine2D<double> HomogeneousLine2Dd;
-    // typedef ParametricLine2D<double> ParametricLine2Dd;
-    // typedef Line3D<double> Line3Dd;
-    typedef Plane<double> Planed;
-    // typedef Triangle2D<double> Triangle2Dd;
-    // typedef Triangle3D<double> Triangle3Dd;
-    typedef Matrix<double> Matrixd;
-    typedef Vector<double> Vectord;
-    typedef Point<double> Pointd;
-    typedef Vec2<double> Vec2d;
-    typedef Vec3<double> Vec3d;
-    typedef Vec4<double> Vec4d;
-    typedef Point2<double> Point2d;
-    typedef Point3<double> Point3d;
-    typedef Point4<double> Point4d;
+    using AxisAngled = AxisAngle<double>;
+    using HomogeneousLine2Dd = HomogeneousLine2D<double>;
+    using ParametricLine2Dd = ParametricLine2D<double>;
+    using Line3Dd = Line3D<double>;
+    using Planed = Plane<double>;
+    using Triangle2Dd = Triangle2D<double>;
+    using Triangle3Dd = Triangle3D<double>;
+    using Matrixd = Matrix<double>;
+    using Vectord = Vector<double>;
+    using Pointd = Point<double>;
+    using Vec2d = Vec2<double>;
+    using Vec3d = Vec3<double>;
+    using Vec4d = Vec4<double>;
+    using Point2d = Point2<double>;
+    using Point3d = Point3<double>;
+    using Point4d = Point4<double>;
 
-    typedef AxisAngle<float> AxisAnglef;
-    // typedef HomogeneousLine2D<float> HomogeneousLine2Df;
-    // typedef ParametricLine2D<float> ParametricLine2Df;
-    // typedef Line3D<float> Line3Df;
-    typedef Plane<float> Planef;
-    // typedef Triangle2D<float> Triangle2Df;
-    // typedef Triangle3D<float> Triangle3Df;
-    typedef Matrix<float> Matrixf;
-    typedef Vector<float> Vectorf;
-    typedef Point<float> Pointf;
-    typedef Vec2<float> Vec2f;
-    typedef Vec3<float> Vec3f;
-    typedef Vec4<float> Vec4f;
-    typedef Point2<float> Point2f;
-    typedef Point3<float> Point3f;
-    typedef Point4<float> Point4f;
+    using AxisAnglef = AxisAngle<float>;
+    using HomogeneousLine2Df = HomogeneousLine2D<float>;
+    using ParametricLine2Df = ParametricLine2D<float>;
+    using Line3Df = Line3D<float>;
+    using Planef = Plane<float>;
+    using Triangle2Df = Triangle2D<float>;
+    using Triangle3Df = Triangle3D<float>;
+    using Matrixf = Matrix<float>;
+    using Vectorf = Vector<float>;
+    using Pointf = Point<float>;
+    using Vec2f = Vec2<float>;
+    using Vec3f = Vec3<float>;
+    using Vec4f = Vec4<float>;
+    using Point2f = Point2<float>;
+    using Point3f = Point3<float>;
+    using Point4f = Point4<float>;
 
-    typedef Vec2<int> Vec2i;
+    using Vec2i = Vec2<int>;
 
     template <typename T>
     using Matrix3x3 = FixedSizeMatrix<T, 3, 3>;
