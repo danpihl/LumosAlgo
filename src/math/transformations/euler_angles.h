@@ -1,7 +1,12 @@
+#ifndef LUMOS_MATH_TRANSFORMATIONS_EULER_ANGLES_H_
+#define LUMOS_MATH_TRANSFORMATIONS_EULER_ANGLES_H_
+
 #include <cmath>
+#include <limits>
 
 #include "math/lin_alg/matrix_fixed/matrix_fixed.h"
 #include "math/transformations/class_def/euler_angles.h"
+#include "math/transformations/quaternion.h"
 
 namespace lumos {
 
@@ -100,8 +105,91 @@ EulerAngles<T>::toRotationMatrix(RotationOrder order) const {
   case RotationOrder::ZYX:
     return rollMatrix() * pitchMatrix() * yawMatrix();
   default:
-    return toRotationMatrix(); // Default to ZYX
+    return toRotationMatrix(); // Same as XYZ
   }
 }
 
+template <typename T>
+EulerAngles<T>
+EulerAngles<T>::fromRotationMatrix(const FixedSizeMatrix<T, 3, 3> &m,
+                                   RotationOrder order) {
+  // The rotation matrix is the product R_i(a) * R_j(b) * R_k(c) of rotations
+  // about the axes i, j and k, where k is the axis that is applied first
+  size_t i = 2, j = 1, k = 0;
+  switch (order) {
+  case RotationOrder::XYZ:
+    i = 2, j = 1, k = 0;
+    break;
+  case RotationOrder::XZY:
+    i = 1, j = 2, k = 0;
+    break;
+  case RotationOrder::YXZ:
+    i = 2, j = 0, k = 1;
+    break;
+  case RotationOrder::YZX:
+    i = 0, j = 2, k = 1;
+    break;
+  case RotationOrder::ZXY:
+    i = 1, j = 0, k = 2;
+    break;
+  case RotationOrder::ZYX:
+    i = 0, j = 1, k = 2;
+    break;
+  }
+
+  // +1 if (i, j, k) is a cyclic permutation of (0, 1, 2), otherwise -1
+  const T sign = ((j == (i + 1) % 3) ? T(1) : T(-1));
+
+  T sin_b = sign * m(i, k);
+  sin_b = (sin_b > T(1)) ? T(1) : ((sin_b < T(-1)) ? T(-1) : sin_b);
+
+  T angles[3];
+  angles[j] = std::asin(sin_b);
+
+  const T gimbal_lock_limit =
+      T(1) - T(100) * std::numeric_limits<T>::epsilon();
+  if (std::abs(sin_b) < gimbal_lock_limit) {
+    angles[i] = std::atan2(-sign * m(j, k), m(k, k));
+    angles[k] = std::atan2(-sign * m(i, j), m(i, i));
+  } else {
+    // Gimbal lock: only the sum or difference of the outer angles is
+    // defined, so put all of it in the last applied rotation
+    angles[i] = std::atan2(sign * m(k, j), m(j, j));
+    angles[k] = T(0);
+  }
+
+  return EulerAngles<T>(angles[0], angles[1], angles[2]);
+}
+
+template <typename T>
+EulerAngles<T>
+EulerAngles<T>::fromRotationMatrix(const FixedSizeMatrix<T, 3, 3> &m) {
+  return fromRotationMatrix(m, RotationOrder::XYZ);
+}
+
+template <typename T>
+EulerAngles<T> EulerAngles<T>::fromQuaternion(const Quaternion<T> &q,
+                                              RotationOrder order) {
+  return fromRotationMatrix(q.toRotationMatrix(), order);
+}
+
+template <typename T>
+EulerAngles<T> EulerAngles<T>::fromQuaternion(const Quaternion<T> &q) {
+  return fromRotationMatrix(q.toRotationMatrix(), RotationOrder::XYZ);
+}
+
+template <typename T>
+Quaternion<T> EulerAngles<T>::toQuaternion(RotationOrder order) const {
+  return Quaternion<T>::fromRotationMatrix(toRotationMatrix(order));
+}
+
+template <typename T> Quaternion<T> EulerAngles<T>::toQuaternion() const {
+  return Quaternion<T>::fromRotationMatrix(toRotationMatrix());
+}
+
+using EulerAnglesd = EulerAngles<double>;
+using EulerAnglesf = EulerAngles<float>;
+
 } // namespace lumos
+
+#endif // LUMOS_MATH_TRANSFORMATIONS_EULER_ANGLES_H_

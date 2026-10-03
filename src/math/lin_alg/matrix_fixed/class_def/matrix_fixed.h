@@ -34,7 +34,7 @@ public:
   T min() const;
   T sum() const;
 
-  FixedSizeMatrix<T, R, C> transposed() const;
+  FixedSizeMatrix<T, C, R> transposed() const;
 };
 
 } // namespace lumos

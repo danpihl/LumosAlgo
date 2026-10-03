@@ -1,6 +1,7 @@
 #ifndef LUMOS_MATH_FILTERS_CLASS_DEF_IIR_FILTER_H_
 #define LUMOS_MATH_FILTERS_CLASS_DEF_IIR_FILTER_H_
 
+#include "math/lin_alg/vector_dynamic/vector_dynamic.h"
 #include "math/misc/forward_decl.h"
 #include <complex>
 #include <deque>
@@ -22,6 +23,7 @@ public:
   // Constructors
   IIRFilter();
   IIRFilter(const std::vector<T> &b_coeffs, const std::vector<T> &a_coeffs);
+  IIRFilter(const Vector<T> &b_coeffs, const Vector<T> &a_coeffs);
   IIRFilter(std::initializer_list<T> b_coeffs,
             std::initializer_list<T> a_coeffs);
   IIRFilter(size_t b_order, const T *b_coeffs, size_t a_order,
@@ -38,6 +40,7 @@ public:
   // Core filtering operations
   T filter(T input);
   std::vector<T> filter(const std::vector<T> &input);
+  Vector<T> filter(const Vector<T> &input);
 
   // Batch processing with output buffer
   void filter(const T *input, T *output, size_t length);
@@ -50,6 +53,7 @@ public:
   // Filter configuration
   void setCoefficients(const std::vector<T> &b_coeffs,
                        const std::vector<T> &a_coeffs);
+  void setCoefficients(const Vector<T> &b_coeffs, const Vector<T> &a_coeffs);
   const std::vector<T> &getNumeratorCoefficients() const;
   const std::vector<T> &getDenominatorCoefficients() const;
 

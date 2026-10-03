@@ -19,6 +19,10 @@ FIRFilter<T>::FIRFilter(const std::vector<T> &coefficients)
 }
 
 template <typename T>
+FIRFilter<T>::FIRFilter(const Vector<T> &coefficients)
+    : FIRFilter(std::vector<T>(coefficients.begin(), coefficients.end())) {}
+
+template <typename T>
 FIRFilter<T>::FIRFilter(std::initializer_list<T> coefficients)
     : coefficients_(coefficients),
       order_(coefficients.size() > 0 ? coefficients.size() - 1 : 0) {
@@ -94,6 +98,16 @@ std::vector<T> FIRFilter<T>::filter(const std::vector<T> &input) {
   return output;
 }
 
+template <typename T> Vector<T> FIRFilter<T>::filter(const Vector<T> &input) {
+  Vector<T> output(input.size());
+
+  for (size_t i = 0; i < input.size(); ++i) {
+    output(i) = filter(input(i));
+  }
+
+  return output;
+}
+
 template <typename T>
 void FIRFilter<T>::filter(const T *input, T *output, size_t length) {
   for (size_t i = 0; i < length; ++i) {
@@ -118,6 +132,11 @@ void FIRFilter<T>::setCoefficients(const std::vector<T> &coefficients) {
   coefficients_ = coefficients;
   order_ = coefficients.size() > 0 ? coefficients.size() - 1 : 0;
   delay_line_.resize(coefficients_.size(), T(0));
+}
+
+template <typename T>
+void FIRFilter<T>::setCoefficients(const Vector<T> &coefficients) {
+  setCoefficients(std::vector<T>(coefficients.begin(), coefficients.end()));
 }
 
 template <typename T>

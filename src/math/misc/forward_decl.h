@@ -4,6 +4,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <cstdint>
 #include <initializer_list>
 #include <iostream>
 #include <string>
@@ -23,6 +24,11 @@ template <typename T> struct VecYZ;
 
 template <typename T> class Vector;
 template <typename T> class Matrix;
+template <typename T, uint16_t R, uint16_t C> class FixedSizeMatrix;
+
+template <typename T> struct AxisAngle;
+template <typename T> class EulerAngles;
+template <typename T> class Quaternion;
 
 template <typename T> struct Line3D;
 template <typename T> struct ParametricLine2D;

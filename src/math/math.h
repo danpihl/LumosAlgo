@@ -15,6 +15,7 @@
 #include "math/lin_alg/vector_low_dim/vec2.h"
 #include "math/lin_alg/vector_low_dim/vec3.h"
 #include "math/lin_alg/vector_low_dim/vec4.h"
+#include "math/lin_alg/conversions.h"
 
 #include "math/transformations/euler_angles.h"
 #include "math/transformations/axis_angle.h"
@@ -32,6 +33,10 @@
 // #include "math/image/image_rgba.h"
 
 #include "math/transformations/quaternion.h"
+#include "math/transformations/angles.h"
+#include "math/transformations/so3.h"
+#include "math/transformations/se2.h"
+#include "math/transformations/se3.h"
 #include "math/curves/curves.h"
 #include "math/filters/filters.h"
 

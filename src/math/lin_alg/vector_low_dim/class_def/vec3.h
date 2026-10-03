@@ -1,6 +1,7 @@
 #ifndef LUMOS_MATH_LIN_ALG_VECTOR_LOW_DIM_CLASS_DEF_VEC3_H_
 #define LUMOS_MATH_LIN_ALG_VECTOR_LOW_DIM_CLASS_DEF_VEC3_H_
 
+#include "math/lin_alg/matrix_fixed/class_def/matrix_fixed.h"
 #include "math/misc/forward_decl.h"
 
 namespace lumos {
@@ -21,7 +22,7 @@ template <typename T> struct Vec3 {
   Vec3<T> elementWiseMultiply(const Vec3<T> &factor_vector) const;
   Vec3<T> elementWiseDivide(const Vec3<T> &numerator_vector) const;
   Vec3<T> crossProduct(const Vec3<T> &right_vector) const;
-  Matrix<T> toCrossProductMatrix() const;
+  FixedSizeMatrix<T, 3, 3> toCrossProductMatrix() const;
   T angleBetweenVectors(const Vec3<T> &v) const;
 };
 
